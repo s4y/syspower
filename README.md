@@ -23,5 +23,6 @@ PCPG (CPU package GPU): 0.015625
 PCPT (CPU package Tot): 14.3846
 PG0R (GPU 0 rail):      0.0730083
 
-(and so on)
 ```
+
+…and so on, once per second.
