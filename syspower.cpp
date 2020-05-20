@@ -118,12 +118,6 @@ class SMCKey {
   bool CallSMCFunction(uint8_t which, SMCParamStruct* out) {
     if (!connect_)
       return false;
-    if (IOConnectCallMethod(connect_, SMCParamStruct::kSMCUserClientOpen,
-                            nullptr, 0, nullptr, 0, nullptr, nullptr, nullptr,
-                            nullptr)) {
-      connect_ = 0;
-      return false;
-    }
 
     SMCParamStruct in{};
     in.key = key_;
@@ -161,10 +155,27 @@ int main() {
                             NULL, 0, NULL, 0, NULL, NULL, NULL,
                             NULL);
 
-  auto powerKey = SMCKey(connect, SMCParamStruct::SMCKey::TotalPower);
+  SMCKey PSTR{connect, SMCParamStruct::SMCKey::TotalPower};
+  SMCKey PCPC{connect, SMCParamStruct::SMCKey::CPUPower};
+  SMCKey PCPG{connect, SMCParamStruct::SMCKey::iGPUPower};
+  SMCKey PCPT{connect, SMCParamStruct::SMCKey::TotalPower};
+  SMCKey PG0R{connect, SMCParamStruct::SMCKey::GPU0Power};
+  SMCKey PG1R{connect, SMCParamStruct::SMCKey::GPU1Power};
 
   for (;;) {
-    printf("%f\n", powerKey.Read());
+    printf("\n");
+    if (PSTR.Exists())
+      printf("PSTR (System Total):    %g\n", PSTR.Read());
+    if (PCPC.Exists())
+      printf("PCPC (CPU package CPU): %g\n", PCPC.Read());
+    if (PCPG.Exists())
+      printf("PCPG (CPU package GPU): %g\n", PCPG.Read());
+    if (PCPT.Exists())
+      printf("PCPT (CPU package Tot): %g\n", PCPT.Read());
+    if (PG0R.Exists())
+      printf("PG0R (GPU 0 rail):      %g\n", PG0R.Read());
+    if (PG1R.Exists())
+      printf("PG1R (GPU 1 rail):      %g\n", PG1R.Read());
     fflush(stdout);
     sleep(1);
   }
